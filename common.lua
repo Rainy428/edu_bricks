@@ -60,6 +60,11 @@ function C.get_ctrl(player)
     return player:get_player_control()
 end
 
+function C.is_teacher_pickup(player)
+    local ctrl = C.get_ctrl(player)
+    return ctrl and ctrl.sneak and ctrl.aux1 and C.is_teacher(player)
+end
+
 function C.is_teacher(player)
     local name = C.get_player_name(player)
     if not name then return false end
@@ -140,7 +145,7 @@ end
 function C.handle_teacher_pickup_buffered(pos, player, pointed_thing, itemname, cd_key, cd_us, delay)
     if not C.is_player(player) then return false end
     if not C.same_pointed_node(pos, pointed_thing) then return false end
-    if not C.is_teacher(player) then return false end
+    if not C.is_teacher_pickup(player) then return false end
 
     return C.pickup_buffered(
         pos,
@@ -148,7 +153,7 @@ function C.handle_teacher_pickup_buffered(pos, player, pointed_thing, itemname, 
         itemname,
         cd_key or "pickup",
         cd_us or 300000,
-        delay or 0.10
+        delay or 0.15
     )
 end
 
